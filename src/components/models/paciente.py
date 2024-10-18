@@ -1,7 +1,5 @@
 from sqlalchemy import Column, Integer, String, Date
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from src.components.models.db import Base
 
 class Paciente(Base):
     __tablename__ = 'tb_Paciente'
@@ -12,3 +10,6 @@ class Paciente(Base):
     telefone = Column(String)
     email = Column(String)
     endereco = Column(String)
+
+    def __repr__(self):
+        return f"<Paciente(id={self.id}, nome={self.nome})>"

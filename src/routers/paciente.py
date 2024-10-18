@@ -1,20 +1,27 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
-from src.components.models import paciente
-from src.main import get_db
+from src.components.models.paciente import Paciente
+from src.components.models.db import get_db
+from src.components.services.paciente_service import create_paciente, get_pacientes
+from src.utils.helpers import format_date  # Importando a função auxiliar
+
+class PacienteCreate(BaseModel):
+    nome: str
+    data_nascimento: str
+    cpf: str
+    telefone: str
+    email: str
+    endereco: str
 
 router = APIRouter()
 
-# Criar um novo paciente
 @router.post("/pacientes/")
-def create_paciente(paciente: Paciente, db: Session = Depends(get_db)):
-    db.add(paciente)
-    db.commit()
-    db.refresh(paciente)
-    return paciente
+def criar_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
+    paciente_data = paciente.dict()
+    paciente_data['data_nascimento'] = format_date(paciente_data['data_nascimento'])
+    return create_paciente(db, paciente_data)
 
-# Listar todos os pacientes
 @router.get("/pacientes/")
-def read_pacientes(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    pacientes = db.query(Paciente).offset(skip).limit(limit).all()
-    return pacientes
+def listar_pacientes(db: Session = Depends(get_db)):
+    return get_pacientes(db)
