@@ -10,6 +10,7 @@ class Paciente(Base):
     telefone = Column(String)
     email = Column(String)
     endereco = Column(String)
+    observacao = Column(String)
 
     def __repr__(self):
         return f"<Paciente(id={self.id}, nome={self.nome})>"

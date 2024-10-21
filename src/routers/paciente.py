@@ -13,6 +13,7 @@ class PacienteCreate(BaseModel):
     telefone: str
     email: str
     endereco: str
+    observacao: str = None
 
 router = APIRouter()
 
