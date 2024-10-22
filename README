@@ -9,3 +9,6 @@ project-root/
 │   ├── routers/
 │   │   ├── paciente.py            # Endpoints CRUD para Pacientes
 │   ├── main.py                    # Ponto de entrada da aplicação
+
+
+uvicorn main:app --reload

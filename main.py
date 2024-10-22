@@ -5,7 +5,9 @@ from src.routers.psicologo import router as psicologo_router
 from src.routers.medo import router as medo_router
 from src.routers.instrumento import router as instrumento_router
 from src.routers.vr import router as vr_router
-from src.routers import cardioemotion
+from src.routers.cardioemotion import router as cardioemotion_router
+from src.routers.medicao import router as medicao_router
+from src.routers.consulta import router as consulta_router
 
 app = FastAPI()
 
@@ -15,7 +17,9 @@ app.include_router(psicologo_router)
 app.include_router(medo_router)
 app.include_router(instrumento_router)
 app.include_router(vr_router)
-app.include_router(cardioemotion.router)
+app.include_router(cardioemotion_router)
+app.include_router(medicao_router)
+app.include_router(consulta_router)
 
 
 # Criando as tabelas

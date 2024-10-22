@@ -1,43 +1,28 @@
-# src/routers/cardioemotion.py
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from src.components.models.db import get_db
-from src.components.models.cardioemotion import CardioEmotion as CardioEmotionModel
-from src.components.services.cardioemotion_service import CardioEmotionCreate, CardioEmotion  # Corrigido para importar do service
+from src.components.services.cardioemotion_service import create_cardioemotion, get_cardioemotions
+
+# Definir o esquema Pydantic para validação de entrada
+class CardioEmotionCreate(BaseModel):
+    id_instrumento: int
+    session_datetime: str
+    green_percent: float = None
+    blue_percent: float = None
+    red_percent: float = None
+    bpm_avg: int = None
+    data1: str = None
 
 router = APIRouter()
 
-@router.post("/cardioemotion/", response_model=CardioEmotion)
-def create_cardioemotion(cardioemotion: CardioEmotionCreate, db: Session = Depends(get_db)):
-    db_cardioemotion = CardioEmotionModel(**cardioemotion.dict())
-    db.add(db_cardioemotion)
-    db.commit()
-    db.refresh(db_cardioemotion)
-    return db_cardioemotion
+# Rota para criar uma nova medição de CardioEmotion
+@router.post("/cardioemotions/")
+def criar_cardioemotion(cardioemotion: CardioEmotionCreate, db: Session = Depends(get_db)):
+    cardioemotion_data = cardioemotion.dict()
+    return create_cardioemotion(db, cardioemotion_data)
 
-@router.get("/cardioemotion/{cardioemotion_id}", response_model=CardioEmotion)
-def read_cardioemotion(cardioemotion_id: int, db: Session = Depends(get_db)):
-    db_cardioemotion = db.query(CardioEmotionModel).filter(CardioEmotionModel.Id_CardioEmotion == cardioemotion_id).first()
-    if db_cardioemotion is None:
-        raise HTTPException(status_code=404, detail="CardioEmotion not found")
-    return db_cardioemotion
-
-@router.put("/cardioemotion/{cardioemotion_id}", response_model=CardioEmotion)
-def update_cardioemotion(cardioemotion_id: int, cardioemotion: CardioEmotionCreate, db: Session = Depends(get_db)):
-    db_cardioemotion = db.query(CardioEmotionModel).filter(CardioEmotionModel.Id_CardioEmotion == cardioemotion_id).first()
-    if db_cardioemotion is None:
-        raise HTTPException(status_code=404, detail="CardioEmotion not found")
-    for key, value in cardioemotion.dict().items():
-        setattr(db_cardioemotion, key, value)
-    db.commit()
-    db.refresh(db_cardioemotion)
-    return db_cardioemotion
-
-@router.delete("/cardioemotion/{cardioemotion_id}", response_model=CardioEmotion)
-def delete_cardioemotion(cardioemotion_id: int, db: Session = Depends(get_db)):
-    db_cardioemotion = db.query(CardioEmotionModel).filter(CardioEmotionModel.Id_CardioEmotion == cardioemotion_id).first()
-    if db_cardioemotion is None:
-        raise HTTPException(status_code=404, detail="CardioEmotion not found")
-    db.delete(db_cardioemotion)
-    db.commit()
-    return db_cardioemotion
+# Rota para listar todas as medições de CardioEmotion
+@router.get("/cardioemotions/")
+def listar_cardioemotions(db: Session = Depends(get_db)):
+    return get_cardioemotions(db)

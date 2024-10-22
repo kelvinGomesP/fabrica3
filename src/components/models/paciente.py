@@ -3,7 +3,7 @@ from src.components.models.db import Base
 
 class Paciente(Base):
     __tablename__ = 'tb_Paciente'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_paciente = Column(Integer, primary_key=True, autoincrement=True)  # Mudado para 'id_paciente'
     nome = Column(String, nullable=False)
     data_nascimento = Column(Date, nullable=False)
     cpf = Column(String, unique=True, nullable=False)
@@ -13,4 +13,4 @@ class Paciente(Base):
     observacao = Column(String)
 
     def __repr__(self):
-        return f"<Paciente(id={self.id}, nome={self.nome})>"
+        return f"<Paciente(id_paciente={self.id_paciente}, nome={self.nome})>"
