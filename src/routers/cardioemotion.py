@@ -26,3 +26,5 @@ def criar_cardioemotion(cardioemotion: CardioEmotionCreate, db: Session = Depend
 @router.get("/cardioemotions/")
 def listar_cardioemotions(db: Session = Depends(get_db)):
     return get_cardioemotions(db)
+
+#OKAY

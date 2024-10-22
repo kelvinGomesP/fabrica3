@@ -1,4 +1,3 @@
-# src/components/services/consulta_service.py
 from sqlalchemy.orm import Session
 from src.components.models.consulta import Consulta
 

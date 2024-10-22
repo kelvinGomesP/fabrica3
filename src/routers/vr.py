@@ -19,3 +19,4 @@ def criar_vr(vr: VRCreate, db: Session = Depends(get_db)):
 @router.get("/vr/")
 def listar_vr(db: Session = Depends(get_db)):
     return get_vr(db)
+#OKAY

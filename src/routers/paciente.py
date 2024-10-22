@@ -26,3 +26,4 @@ def criar_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
 @router.get("/pacientes/")
 def listar_pacientes(db: Session = Depends(get_db)):
     return get_pacientes(db)
+#okay

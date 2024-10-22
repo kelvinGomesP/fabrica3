@@ -22,3 +22,4 @@ def criar_psicologo(psicologo: PsicologoCreate, db: Session = Depends(get_db)):
 @router.get("/psicologos/")
 def listar_psicologos(db: Session = Depends(get_db)):
     return get_psicologos(db)
+#okay

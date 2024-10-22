@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, Float, String, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from src.components.models.db import Base
-from src.components.models.instrumento import Instrumento  # Referência à tabela Instrumento
+from src.components.models.instrumento import Instrumento 
 
 class CardioEmotion(Base):
     __tablename__ = 'tb_CardioEmotion'

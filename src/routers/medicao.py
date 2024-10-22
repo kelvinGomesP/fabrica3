@@ -24,3 +24,5 @@ def criar_medicao(medicao: MedicaoCreate, db: Session = Depends(get_db)):
 @router.get("/medicoes/")
 def listar_medicoes(db: Session = Depends(get_db)):
     return get_medicoes(db)
+
+#OKAY

@@ -19,3 +19,5 @@ def criar_instrumento(instrumento: InstrumentoCreate, db: Session = Depends(get_
 @router.get("/instrumentos/")
 def listar_instrumentos(db: Session = Depends(get_db)):
     return get_instrumentos(db)
+
+#OKAY

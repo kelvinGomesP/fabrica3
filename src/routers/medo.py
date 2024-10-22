@@ -19,3 +19,4 @@ def criar_medo(medo: MedoCreate, db: Session = Depends(get_db)):
 @router.get("/medos/")
 def listar_medos(db: Session = Depends(get_db)):
     return get_medos(db)
+#OKAY
