@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Caminho para o banco de dados
-SQLALCHEMY_DATABASE_URL = "sqlite:///C:/Users/e-kelvin.santos/Documentos/fabrica3/fabrica.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///fabrica.db"
  # Altere conforme necessário
 
 # Criação do engine para conectar ao banco de dados
