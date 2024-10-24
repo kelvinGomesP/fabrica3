@@ -1,8 +1,6 @@
 import streamlit as st
-from app.controllers.paciente_controller import cadastrar_paciente
-from app.controllers.medo_controller import cadastrar_medo  # Corrigido para app
-
-
+from controllers.paciente_controller import cadastrar_paciente
+from controllers.medo_controller import cadastrar_medo  # Corrigido para app
 
 
 def cadastro_paciente():

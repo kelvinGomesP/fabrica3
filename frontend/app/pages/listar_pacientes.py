@@ -1,5 +1,5 @@
 import streamlit as st
-from app.controllers.paciente_controller import listar_pacientes
+from controllers.paciente_controller import listar_pacientes
 
 def listar_pacientes_page():
     st.title("Lista de Pacientes")

@@ -14,3 +14,4 @@ project-root/
 uvicorn main:app --reload
 docker build -t my_fastapi_backend .
 docker run -d -p 8000:8000 my_fastapi_backend
+streamlit run app/streamlit_app.py
