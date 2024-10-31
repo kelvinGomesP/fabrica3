@@ -11,6 +11,7 @@ from backend.src.routers.consulta import router as consulta_router
 from backend.src.routers.paciente_instrumento import router as paciente_instrumento_router
 from backend.src.routers.paciente_medo import router as paciente_medo_router
 
+
 app = FastAPI()
 
 # Incluindo rotas
