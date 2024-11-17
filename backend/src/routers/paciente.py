@@ -22,19 +22,24 @@ class PacienteCreate(BaseModel):
 
 router = APIRouter()
 
+
 @router.post("/pacientes/")
 def criar_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
     paciente_data = paciente.dict()
     paciente_data['data_nascimento'] = format_date(paciente_data['data_nascimento'])
     
-    # Separar dados do medo
-    medo_data = paciente_data.pop("medo", None)
-    if medo_data:
-        medo_data = medo_data.dict()
-    
-    # Chamar o serviço de criação com o medo opcional
+    # Extrair dados do medo
+    medo_data = paciente_data.pop("medo", None)  # Remove e armazena dados de medo (se existirem)
+
+    # Enviar para o serviço
     return create_paciente(db, paciente_data, medo_data)
+
+
 
 @router.get("/pacientes/")
 def listar_pacientes(db: Session = Depends(get_db)):
     return get_pacientes(db)
+
+
+
+
