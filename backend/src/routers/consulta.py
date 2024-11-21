@@ -4,25 +4,22 @@ from sqlalchemy.orm import Session
 from backend.src.components.models.consulta import Consulta
 from backend.src.components.models.db import get_db
 from backend.src.components.services.consulta_service import create_consulta, get_consultas
+from typing import Optional
 
-# Definindo o schema para as entradas (Pydantic)
 class ConsultaCreate(BaseModel):
-    id_paciente: int
-    id_psicologo: int
-    data_consulta: str
-    id_vr: int = None
-    id_medicao: int = None
+    id_paciente: int  # ID do paciente (obrigatório)
+    id_psicologo: int  # ID do psicólogo (obrigatório)
+    data_consulta: str  # Data da consulta (obrigatório)
+    id_vr: Optional[int] = None  # ID do VR (opcional)
+    id_medicao: Optional[int] = None  # ID da Medição (opcional)
 
 router = APIRouter()
 
-# Rota para criar uma nova consulta
 @router.post("/consultas/")
-def criar_consulta(consulta: ConsultaCreate, db: Session = Depends(get_db)):
-    consulta_data = consulta.dict()
-    return create_consulta(db, consulta_data)
+def criar_consulta_endpoint(consulta_data: ConsultaCreate, db: Session = Depends(get_db)):
+    return create_consulta(db, consulta_data.dict())
 
-# Rota para listar todas as consultas
 @router.get("/consultas/")
-def listar_consultas(db: Session = Depends(get_db)):
-    return get_consultas(db)
-#okay
+async def listar_consultas(db: Session = Depends(get_db)):  # Corrigido para passar o db como dependência
+    consultas = db.query(Consulta).all()  # Exemplo de consulta ao banco de dados
+    return consultas

@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 from backend.src.components.services.paciente_service import create_paciente, get_pacientes
 from backend.src.components.models.db import get_db
 from backend.src.utils.helpers import format_date
+from backend.src.components.models.paciente import Paciente
+from backend.src.components.models.psicologo import Psicologo
 
 # Atualizar o esquema do medo para receber o medo opcionalmente
 class MedoCreate(BaseModel):
@@ -35,6 +37,15 @@ def criar_paciente(paciente: PacienteCreate, db: Session = Depends(get_db)):
     return create_paciente(db, paciente_data, medo_data)
 
 
+@router.get("/pacientes/")
+def listar_pacientes(db: Session = Depends(get_db)):
+    pacientes = db.query(Paciente).all()
+    return pacientes
+
+@router.get("/psicologos/")
+def listar_psicologos(db: Session = Depends(get_db)):
+    psicologos = db.query(Psicologo).all()
+    return psicologos
 
 @router.get("/pacientes/")
 def listar_pacientes(db: Session = Depends(get_db)):
