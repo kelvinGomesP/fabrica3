@@ -126,3 +126,8 @@ def consultas_page():
             st.info("Nenhuma consulta cadastrada.")
     except Exception as e:
         st.error(f"Erro ao carregar consultas: {e}")
+
+
+# Executar a página
+if __name__ == "__main__":
+    consultas_page()

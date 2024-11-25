@@ -35,3 +35,9 @@ def cadastro_psicologo():
             cadastrar_psicologo(psicologo_data)
         else:
             st.error("Certifique-se de que CPF e Telefone estão no formato correto.")
+
+
+# Executar a página
+if __name__ == "__main__":
+    cadastro_psicologo()
+

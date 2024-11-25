@@ -2,6 +2,8 @@ import streamlit as st
 from datetime import date
 from controllers.paciente_controller import cadastrar_paciente
 from controllers.medo_controller import cadastrar_medo
+
+
 def cadastro_paciente():
     st.title("Cadastro de Paciente")
 
@@ -39,3 +41,8 @@ def cadastro_paciente():
                 }
             }
             cadastrar_paciente(paciente_data)
+
+# Executar a página
+if __name__ == "__main__":
+    cadastro_paciente()
+

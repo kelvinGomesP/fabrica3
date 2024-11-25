@@ -1,16 +1,13 @@
 import streamlit as st
 import time
 import requests
+import csv
 from datetime import date, datetime
 from controllers.paciente_controller import listar_pacientes
 import plotly.graph_objs as go
+from func.salva_cortado import extract_bpm
 
 API_BASE_URL = "http://localhost:8000"
-
-# Função para simular dados de BPM
-def obter_bpm_simulado():
-    import random
-    return random.randint(60, 100)  # Simula valores de BPM entre 60 e 100
 
 # Função para calcular idade a partir da data de nascimento
 def calcular_idade(data_nascimento):
@@ -33,12 +30,12 @@ def visualizar_paciente():
     nomes_pacientes = {paciente["nome"]: paciente for paciente in pacientes}
     nome_selecionado = st.selectbox("Escolha um paciente:", list(nomes_pacientes.keys()))
     duracao_sessao = st.number_input(
-    "Digite a duração da sessão em segundos:",
+    "Digite a duração da sessão em minutos:",
     min_value=5,
     max_value=180,
     value=30,
     step=10,
-    help="Escolha a duração da sessão de monitoramento (entre 10 segundos e 1 hora)."
+    help="Defina quanto vai durar essa sessão"
 )
 
     # Botão de confirmação
@@ -47,7 +44,7 @@ def visualizar_paciente():
         paciente = nomes_pacientes[nome_selecionado]
         idade = calcular_idade(paciente["data_nascimento"])
         medo = paciente.get("medo", {})
-        media_bpm = obter_bpm_simulado()  # Em produção, use dados reais
+        media_bpm = extract_bpm() # Em produção, use dados reais
         observacoes = paciente.get("observacao", "Sem observações")
 
         # Layout em colunas
@@ -93,14 +90,14 @@ def visualizar_paciente():
                     st.warning("Visualização pausada. Desmarque a opção para continuar.")
                     break
 
-                bpm_atual = obter_bpm_simulado()
+                bpm_atual = int(extract_bpm())
                 bpm_dados.append(bpm_atual)
                 tempo.append(i)  # Incrementa o tempo em segundos
                 i += 1
                 # Definir cor com base nos valores
-                if bpm_atual < 70:
+                if bpm_atual < 75:
                     cor = "green"
-                elif bpm_atual < 90:
+                elif bpm_atual < 110:
                     cor = "orange"
                 else:
                     cor = "red"
