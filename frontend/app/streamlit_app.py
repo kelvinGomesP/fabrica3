@@ -1,8 +1,19 @@
+import os
 import streamlit as st
 from pages.cadastro_paciente import cadastro_paciente
 from pages.cadastro_psicologo import cadastro_psicologo
 from pages.tempo_real import visualizar_paciente
 from pages.consultas_page import consultas_page
+
+def get_image_path(image_name):
+
+    current_path = os.path.dirname(os.path.abspath(__file__))
+    image_path = os.path.join(current_path, "images", image_name)
+    return image_path
+
+# Função para navegação entre páginas
+def navigate_to(page_name):
+    st.query_params['page'] = page_name
 
 # Configurações iniciais da página
 st.set_page_config(
@@ -38,16 +49,15 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Função para navegação entre páginas
-def navigate_to(page_name):
-    st.query_params['page'] = page_name
 
 # Obter a página atual da URL
 current_page = st.query_params.get("page", "home")
+brain_image_path = get_image_path("mente1.jpg") # Substitua pelo caminho correto ou URL
 
 # Renderizar páginas com base no query parameter
 if current_page == "home":
     st.title("Bem-vindo ao Dashboard de Psicologia 🧠")
+    st.image(brain_image_path, use_container_width=True)
     st.subheader("Transformando dados em insights para a saúde mental")
     st.markdown(
         """
