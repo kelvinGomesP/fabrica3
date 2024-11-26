@@ -5,17 +5,17 @@ from pages.cadastro_psicologo import cadastro_psicologo
 from pages.tempo_real import visualizar_paciente
 from pages.consultas_page import consultas_page
 
+# Função para obter o caminho de imagens
 def get_image_path(image_name):
-
     current_path = os.path.dirname(os.path.abspath(__file__))
     image_path = os.path.join(current_path, "images", image_name)
     return image_path
 
-# Função para navegação entre páginas
+# Navegação entre páginas
 def navigate_to(page_name):
-    st.query_params['page'] = page_name
+    st.experimental_set_query_params(page=page_name)
 
-# Configurações iniciais da página
+# Configuração inicial
 st.set_page_config(
     page_title="Dashboard de Psicologia",
     page_icon="🧠",
@@ -49,15 +49,22 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# Obter a página atual
+query_params = st.query_params
+current_page = query_params.get("page", ["home"])[0]
 
-# Obter a página atual da URL
-current_page = st.query_params.get("page", "home")
-brain_image_path = get_image_path("mente1.jpg") # Substitua pelo caminho correto ou URL
+# Caminhos das imagens
+brain_image_path = get_image_path("mente1.jpg")
+logo_image_path = get_image_path("idp_logo.png")
 
-# Renderizar páginas com base no query parameter
+# Renderizar as páginas
 if current_page == "home":
     st.title("Bem-vindo ao Dashboard de Psicologia 🧠")
-    st.image(brain_image_path, use_container_width=True)
+    if os.path.exists(brain_image_path):
+        st.image(brain_image_path, caption="Explorando a mente humana")
+    else:
+        st.error("Erro: Imagem da mente não encontrada.")
+
     st.subheader("Transformando dados em insights para a saúde mental")
     st.markdown(
         """
@@ -65,24 +72,30 @@ if current_page == "home":
         gerenciamento de consultas e análise de dados clínicos.
         """
     )
+    st.markdown("---")
+    if os.path.exists(logo_image_path):
+        st.image(logo_image_path, width=200)
+    else:
+        st.error("Erro: Logo do IDP não encontrada.")
 
+    # Botões de navegação
     col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
     with col1:
         if st.button("📊 Monitoramento em Tempo Real"):
             navigate_to("tempo_real")
-            st.rerun()
+            st.experimental_rerun()
     with col2:
         if st.button("👤 Cadastro de Pacientes"):
             navigate_to("cadastro_paciente")
-            st.rerun()
+            st.experimental_rerun()
     with col3:
         if st.button("👨‍⚕️ Cadastro Psicólogo"):
             navigate_to("cadastro_psicologo")
-            st.rerun()
+            st.experimental_rerun()
     with col4:
         if st.button("📅 Consultas"):
             navigate_to("consultas")
-            st.rerun()
+            st.experimental_rerun()
 
 elif current_page == "tempo_real":
     visualizar_paciente()
