@@ -59,6 +59,11 @@ logo_image_path = get_image_path("idp_logo.png")
 
 # Renderizar as páginas
 if current_page == "home":
+    # if os.path.exists(logo_image_path):
+    #     st.image(logo_image_path, width=200)
+    # else:
+    #     st.error("Erro: Logo do IDP não encontrada.")
+
     st.title("Bem-vindo ao Dashboard de Psicologia 🧠")
     if os.path.exists(brain_image_path):
         st.image(brain_image_path, caption="Explorando a mente humana")
@@ -73,10 +78,6 @@ if current_page == "home":
         """
     )
     st.markdown("---")
-    if os.path.exists(logo_image_path):
-        st.image(logo_image_path, width=200)
-    else:
-        st.error("Erro: Logo do IDP não encontrada.")
 
     # Botões de navegação
     col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
