@@ -96,17 +96,18 @@ Este sistema foi desenvolvido para auxiliar psicólogos durante sessões de tera
 ## **Como Executar**
 1. Inicie o backend:
    ```bash
+   uvicorn backend.src.main:app --reload
+   ```
 
-uvicorn backend.src.main:app --reload
 
 
 
 2. Inicie o frontend:
    ```bash
-streamlit run frontend/app/streamlit_app.py
+   streamlit run frontend/app/streamlit_app.py
+   ```
 
 
-  ```
 
 3. Acesse o frontend em: [http://localhost:8501](http://localhost:8501)
 
