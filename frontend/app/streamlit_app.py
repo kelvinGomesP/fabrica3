@@ -72,7 +72,7 @@ if current_page == "home":
     st.title("Bem-vindo ao Dashboard de Psicologia 🧠")
     if os.path.exists(brain_image_path):
         st.markdown(
-            f"<div class='full-width-image'><img src='data:image/jpeg;base64,{st.image(brain_image_path, use_column_width=True)}' alt=''></div>",
+            f"<div class='full-width-image'><img src='data:image/jpeg;base64,{st.image(brain_image_path, use_container_width=True)}' alt=''></div>",
             unsafe_allow_html=True,
         )
     else:
@@ -90,7 +90,7 @@ if current_page == "home":
     # Botões de navegação
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     with col1:
-        if st.button("📈 Monitoramento em Tempo Real"):
+        if st.button("📈Sessão em Tempo Real"):
             navigate_to("tempo_real")
             st.rerun()
     with col2:
@@ -102,12 +102,12 @@ if current_page == "home":
             navigate_to("cadastro_psicologo")
             st.rerun()
     with col4:
-        if st.button("📅 Consultas"):
-            navigate_to("consultas")
-            st.rerun()
-    with col5:
         if st.button("🔍 Listar Pacientes"):
             navigate_to("listar_pacientes")
+            st.rerun()
+    with col5:
+        if st.button("📅 Consultas"):
+            navigate_to("consultas")
             st.rerun()
 
 elif current_page == "tempo_real":
