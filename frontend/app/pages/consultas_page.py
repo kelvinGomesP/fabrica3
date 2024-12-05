@@ -15,6 +15,7 @@ def listar_pacientes():
         st.error("Erro ao carregar pacientes.")
         return []
 
+
 def listar_psicologos():
     response = requests.get("http://localhost:8000/psicologos/")
     if response.status_code == 200:
@@ -23,84 +24,86 @@ def listar_psicologos():
         st.error("Erro ao carregar psicólogos.")
         return []
 
+
 def consultas_page():
     render_back_to_home_button()
     st.title("Cadastro de Consultas")
+    st.markdown("### Preencha os dados abaixo para cadastrar uma nova consulta.")
 
     # Formulário para cadastro de consulta
     with st.form("form_consulta"):
-        st.subheader("Nova Consulta")
-
         # Carrega pacientes e psicólogos para seleção
-        pacientes = listar_pacientes()
-        psicologos = listar_psicologos()
+        with st.spinner("Carregando pacientes e psicólogos..."):
+            pacientes = listar_pacientes()
+            psicologos = listar_psicologos()
+
+        if not pacientes or not psicologos:
+            st.warning("Não foi possível carregar os dados de pacientes ou psicólogos.")
+            return
 
         paciente_names = [paciente['nome'] for paciente in pacientes]
         psicologo_names = [psicologo['nome'] for psicologo in psicologos]
 
-        nome_paciente = st.selectbox("Selecione o Paciente", paciente_names)
-        nome_psicologo = st.selectbox("Selecione o Psicólogo", psicologo_names)
+        col1, col2 = st.columns(2)
+        with col1:
+            nome_paciente = st.selectbox("Paciente", paciente_names)
+        with col2:
+            nome_psicologo = st.selectbox("Psicólogo", psicologo_names)
 
-        # Encontre os IDs do paciente e psicólogo selecionado
-        paciente_id = next(paciente['id_paciente'] for paciente in pacientes if paciente['nome'] == nome_paciente)
-        psicologo_id = next(psicologo['id_psicologo'] for psicologo in psicologos if psicologo['nome'] == nome_psicologo)
+        # Obter IDs dos selecionados
+        paciente_id = next(p['id_paciente'] for p in pacientes if p['nome'] == nome_paciente)
+        psicologo_id = next(p['id_psicologo'] for p in psicologos if p['nome'] == nome_psicologo)
 
-        # Seletor de data com intervalo de hoje até 2030
         data_consulta = st.date_input(
             "Data da Consulta",
-            min_value=date.today(),  # Data mínima é o dia de hoje
-            max_value=date(2030, 12, 31),  # Data máxima é 31 de dezembro de 2030
-            help="Escolha a data da consulta"
+            min_value=date.today(),
+            max_value=date(2030, 12, 31),
+            help="Selecione uma data entre hoje e 31/12/2030."
         )
 
-        # Botão de submissão
         submitted = st.form_submit_button("Cadastrar Consulta")
         if submitted:
             try:
                 consulta_data = {
                     "id_paciente": paciente_id,
                     "id_psicologo": psicologo_id,
-                    "data_consulta": str(data_consulta),  # Convertendo a data selecionada para string
+                    "data_consulta": str(data_consulta),
                 }
                 nova_consulta = criar_consulta(consulta_data)
                 st.success(f"Consulta cadastrada com sucesso! ID: {nova_consulta['id_consulta']}")
             except Exception as e:
                 st.error(f"Erro ao cadastrar consulta: {e}")
 
-    # Listagem de consultas cadastradas
+    st.markdown("---")
     st.subheader("Consultas Cadastradas")
 
+    # Carregamento e filtros
     try:
         consultas = listar_consultas()
         if consultas:
-            # Exibir filtros para consulta
-            st.subheader("Filtrar Consultas")
-
-            # Filtros
-            paciente_filter = st.selectbox("Filtrar por Paciente", ["Todos"] + paciente_names)
-            psicologo_filter = st.selectbox("Filtrar por Psicólogo", ["Todos"] + psicologo_names)
-
-            # Adicionando a opção "Todos" ao filtro de data
-            data_consultas = [consulta['data_consulta'] for consulta in consultas]
-            datas_unicas = sorted(set(data_consultas))  # Datas únicas para filtrar
-            datas_unicas.insert(0, "Todos")  # Adiciona a opção "Todos"
-
-            data_filter = st.selectbox("Filtrar por Data", datas_unicas)
-
-            # Aplica os filtros ao DataFrame de consultas
+            # Estrutura da tabela
             consulta_data = []
             for consulta in consultas:
-                paciente_nome = next(paciente['nome'] for paciente in pacientes if paciente['id_paciente'] == consulta['id_paciente'])
-                psicologo_nome = next(psicologo['nome'] for psicologo in psicologos if psicologo['id_psicologo'] == consulta['id_psicologo'])
+                paciente_nome = next(p['nome'] for p in pacientes if p['id_paciente'] == consulta['id_paciente'])
+                psicologo_nome = next(p['nome'] for p in psicologos if p['id_psicologo'] == consulta['id_psicologo'])
                 consulta_data.append({
                     "Data": consulta['data_consulta'],
                     "Paciente": paciente_nome,
-                    "Psicólogo": psicologo_nome
+                    "Psicólogo": psicologo_nome,
                 })
 
             df_consultas = pd.DataFrame(consulta_data)
 
-            # Aplicando os filtros
+            # Filtros
+            st.markdown("#### Filtros")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                paciente_filter = st.selectbox("Por Paciente", ["Todos"] + paciente_names)
+            with col2:
+                psicologo_filter = st.selectbox("Por Psicólogo", ["Todos"] + psicologo_names)
+            with col3:
+                data_filter = st.selectbox("Por Data", ["Todos"] + sorted(df_consultas["Data"].unique()))
+
             if paciente_filter != "Todos":
                 df_consultas = df_consultas[df_consultas['Paciente'] == paciente_filter]
             if psicologo_filter != "Todos":
@@ -108,22 +111,17 @@ def consultas_page():
             if data_filter != "Todos":
                 df_consultas = df_consultas[df_consultas['Data'] == data_filter]
 
-            # Exibindo a tabela com as consultas filtradas
+            # Exibição da tabela
             if not df_consultas.empty:
-                st.dataframe(df_consultas)  # Exibindo a tabela de consultas filtradas
+                st.dataframe(df_consultas, use_container_width=True)
+                st.download_button(
+                    label="Baixar tabela como CSV",
+                    data=df_consultas.to_csv(index=False),
+                    file_name="consultas.csv",
+                    mime="text/csv"
+                )
             else:
-                st.info("Nenhuma consulta encontrada com os filtros selecionados.")
-
-            # Contagem de pacientes por psicólogo
-            st.subheader("Contagem de Pacientes por Psicólogo")
-            psicologo_counts = df_consultas['Psicólogo'].value_counts().reset_index()
-            psicologo_counts.columns = ['Psicólogo', 'Número de Pacientes']
-
-            # Ordenando de forma decrescente pela quantidade de pacientes
-            psicologo_counts = psicologo_counts.sort_values(by='Número de Pacientes', ascending=False)
-
-            # Exibindo a tabela de contagem de pacientes
-            st.dataframe(psicologo_counts)
+                st.info("Nenhuma consulta encontrada com os filtros aplicados.")
 
         else:
             st.info("Nenhuma consulta cadastrada.")

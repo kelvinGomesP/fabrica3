@@ -9,17 +9,18 @@ from func.back_to_home import render_back_to_home_button
 # Função para buscar pacientes, medos e relações
 def fetch_data():
     try:
-        pacientes_response = requests.get(f"{API_BASE_URL}/pacientes/")
-        pacientes_response.raise_for_status()
-        pacientes = pacientes_response.json()
+        with st.spinner("Carregando dados..."):
+            pacientes_response = requests.get(f"{API_BASE_URL}/pacientes/")
+            pacientes_response.raise_for_status()
+            pacientes = pacientes_response.json()
 
-        paciente_medos_response = requests.get(f"{API_BASE_URL}/pacientes-medos/")
-        paciente_medos_response.raise_for_status()
-        paciente_medos = paciente_medos_response.json()
+            paciente_medos_response = requests.get(f"{API_BASE_URL}/pacientes-medos/")
+            paciente_medos_response.raise_for_status()
+            paciente_medos = paciente_medos_response.json()
 
-        medos_response = requests.get(f"{API_BASE_URL}/medos/")  # Obter medos
-        medos_response.raise_for_status()
-        medos = medos_response.json()
+            medos_response = requests.get(f"{API_BASE_URL}/medos/")
+            medos_response.raise_for_status()
+            medos = medos_response.json()
 
         return pacientes, paciente_medos, medos
     except requests.exceptions.RequestException as e:
@@ -67,38 +68,51 @@ def combinar_dados(pacientes, paciente_medos, medos):
 
     return pacientes_com_medo, pacientes_sem_medo
 
-# Função para estilizar a exibição de pacientes
+# Função para exibir pacientes em cartões
 def exibir_pacientes(pacientes, titulo):
     st.subheader(titulo)
 
     if not pacientes:
-        st.warning(f"Não há {titulo.lower()} cadastrados.")
+        st.info(f"Não há {titulo.lower()} cadastrados.")
         return
 
     for paciente in pacientes:
         st.markdown(f"""
-        <div style="border: 1px solid #ccc; border-radius: 10px; padding: 15px; margin-bottom: 20px; background-color: #696969;">
-            <h2 style="color: #007BFF; margin-bottom: 10px;">{paciente['Nome']}</h2>
+        <div style="
+            border: 1px solid #444; 
+            border-radius: 8px; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            background-color: #333; 
+            color: #EEE;
+        ">
+            <h3 style="color: #FFF; margin-bottom: 10px;">{paciente['Nome']}</h3>
             <p><strong>Medo:</strong> <span style="color: #FF6347;">{paciente['Medo']}</span></p>
-            <ul style="list-style-type: none; padding: 0; margin-top: 10px;">
-                <li><strong>Grau:</strong> {paciente['Grau']}</li>
-                <li><strong>Data de Nascimento:</strong> {paciente['Data de Nascimento']}</li>
-                <li><strong>CPF:</strong> {paciente['CPF']}</li>
-                <li><strong>Telefone:</strong> {paciente['Telefone']}</li>
-                <li><strong>Email:</strong> {paciente['Email']}</li>
-                <li><strong>Endereço:</strong> {paciente['Endereço']}</li>
-                <li><strong>Observação:</strong> {paciente['Observação'] if paciente['Observação'] else "Nenhuma"}</li>
-            </ul>
+            <p><strong>Grau:</strong> {paciente['Grau']}</p>
+            <p><strong>Data de Nascimento:</strong> {paciente['Data de Nascimento']}</p>
+            <p><strong>CPF:</strong> {paciente['CPF']}</p>
+            <p><strong>Telefone:</strong> {paciente['Telefone']}</p>
+            <p><strong>Email:</strong> {paciente['Email']}</p>
+            <p><strong>Endereço:</strong> {paciente['Endereço']}</p>
+            <p><strong>Observação:</strong> {paciente['Observação'] if paciente['Observação'] else "Nenhuma"}</p>
         </div>
         """, unsafe_allow_html=True)
 
 # Página principal
 def main():
     render_back_to_home_button()
-    # Define um fundo cinza claro para a página
-    st.markdown("""<style>body { background-color: #696969; }</style>""", unsafe_allow_html=True)
+
+    # Ajuste do estilo geral
+    st.markdown("""
+    <style>
+        body { background-color: #222; color: #EEE; font-family: 'Arial', sans-serif; }
+        h1, h2, h3 { color: #FFF; }
+        .stTextInput label, .stSelectbox label { color: #EEE; }
+    </style>
+    """, unsafe_allow_html=True)
 
     st.title("Lista de Pacientes e Seus Medos")
+    st.markdown("Gerencie e visualize os pacientes e seus respectivos medos de forma organizada.")
 
     # Buscar dados
     pacientes, paciente_medos, medos = fetch_data()
@@ -111,14 +125,15 @@ def main():
         pacientes_com_medo.sort(key=lambda x: x['Nome'])
         pacientes_sem_medo.sort(key=lambda x: x['Nome'])
 
-        # Filtro de nome do paciente
-        nome_filtro = st.text_input("Filtrar por nome do paciente")
+        # Filtros
+        st.markdown("### Filtros")
+        col1, col2 = st.columns(2)
+        with col1:
+            nome_filtro = st.text_input("Filtrar por nome")
+        with col2:
+            medo_filtro = st.selectbox("Filtrar por medo", ["Todos"] + [m["nome_medo"] for m in medos])
 
-        # Filtro de medo
-        medos_lista = [medo["nome_medo"] for medo in medos]
-        medo_filtro = st.selectbox("Filtrar por medo", ["Todos"] + medos_lista)
-
-        # Filtrar os pacientes com base nos filtros
+        # Aplicação dos filtros
         if nome_filtro:
             pacientes_com_medo = [p for p in pacientes_com_medo if nome_filtro.lower() in p["Nome"].lower()]
             pacientes_sem_medo = [p for p in pacientes_sem_medo if nome_filtro.lower() in p["Nome"].lower()]
@@ -126,10 +141,8 @@ def main():
         if medo_filtro != "Todos":
             pacientes_com_medo = [p for p in pacientes_com_medo if p["Medo"] == medo_filtro]
 
-        # Exibir pacientes com medos
+        # Exibição
         exibir_pacientes(pacientes_com_medo, "Pacientes com Medos")
-
-        # Exibir pacientes sem medos
         exibir_pacientes(pacientes_sem_medo, "Pacientes sem Medos")
     else:
         st.warning("Não foi possível carregar os dados dos pacientes.")

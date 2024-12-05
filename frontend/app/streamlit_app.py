@@ -1,9 +1,11 @@
+# Atualização do primeiro código: streamlit_app.py
 import os
 import streamlit as st
 from pages.cadastro_paciente import cadastro_paciente
 from pages.cadastro_psicologo import cadastro_psicologo
 from pages.tempo_real import visualizar_paciente
 from pages.consultas_page import consultas_page
+from pages.listar_pacientes import main as listar_pacientes
 
 # Função para obter o caminho de imagens
 def get_image_path(image_name):
@@ -86,9 +88,9 @@ if current_page == "home":
     st.markdown("---")
 
     # Botões de navegação
-    col1, col2, col3, col4 = st.columns([1, 1, 1, 1])
+    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     with col1:
-        if st.button("📊 Monitoramento em Tempo Real"):
+        if st.button("📈 Monitoramento em Tempo Real"):
             navigate_to("tempo_real")
             st.rerun()
     with col2:
@@ -103,6 +105,10 @@ if current_page == "home":
         if st.button("📅 Consultas"):
             navigate_to("consultas")
             st.rerun()
+    with col5:
+        if st.button("🔍 Listar Pacientes"):
+            navigate_to("listar_pacientes")
+            st.rerun()
 
 elif current_page == "tempo_real":
     visualizar_paciente()
@@ -115,6 +121,9 @@ elif current_page == "cadastro_psicologo":
 
 elif current_page == "consultas":
     consultas_page()
+
+elif current_page == "listar_pacientes":
+    listar_pacientes()
 
 # Rodapé
 st.markdown(
