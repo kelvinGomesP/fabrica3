@@ -6,6 +6,7 @@ from datetime import date, datetime
 from controllers.paciente_controller import listar_pacientes
 import plotly.graph_objs as go
 from func.salva_cortado import extract_bpm
+from func.back_to_home import render_back_to_home_button
 
 API_BASE_URL = "http://localhost:8000"
 
@@ -17,6 +18,7 @@ def calcular_idade(data_nascimento):
 
 # Página principal
 def visualizar_paciente():
+    render_back_to_home_button()
     st.title("Visualização de Dados em Tempo Real")
     st.subheader("Selecione o paciente para monitoramento")
 

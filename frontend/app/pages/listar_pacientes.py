@@ -4,6 +4,8 @@ import requests
 # URL da API
 API_BASE_URL = "http://localhost:8000"
 
+from func.back_to_home import render_back_to_home_button
+
 # Função para buscar pacientes, medos e relações
 def fetch_data():
     try:
@@ -92,6 +94,7 @@ def exibir_pacientes(pacientes, titulo):
 
 # Página principal
 def main():
+    render_back_to_home_button()
     # Define um fundo cinza claro para a página
     st.markdown("""<style>body { background-color: #696969; }</style>""", unsafe_allow_html=True)
 

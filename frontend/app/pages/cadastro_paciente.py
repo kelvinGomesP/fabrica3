@@ -2,9 +2,11 @@ import streamlit as st
 from datetime import date
 from controllers.paciente_controller import cadastrar_paciente
 from controllers.medo_controller import cadastrar_medo
+from func.back_to_home import render_back_to_home_button
 
 
 def cadastro_paciente():
+    render_back_to_home_button()
     st.title("Cadastro de Paciente")
 
     with st.form("cadastro_paciente_form"):

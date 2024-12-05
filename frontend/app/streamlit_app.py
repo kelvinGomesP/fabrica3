@@ -13,7 +13,7 @@ def get_image_path(image_name):
 
 # Navegação entre páginas
 def navigate_to(page_name):
-    st.experimental_set_query_params(page=page_name)
+    st.query_params = {"page": page_name}
 
 # Configuração inicial
 st.set_page_config(
@@ -44,6 +44,14 @@ st.markdown(
             background-color: #3E8E92;
             transform: scale(1.05);
         }
+        .full-width-image img {
+            display: block;
+            width: 100%;
+            height: auto;
+            margin: 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
     </style>
     """,
     unsafe_allow_html=True,
@@ -51,7 +59,7 @@ st.markdown(
 
 # Obter a página atual
 query_params = st.query_params
-current_page = query_params.get("page", ["home"])[0]
+current_page = query_params.get("page", "home")
 
 # Caminhos das imagens
 brain_image_path = get_image_path("mente1.jpg")
@@ -59,14 +67,12 @@ logo_image_path = get_image_path("idp_logo.png")
 
 # Renderizar as páginas
 if current_page == "home":
-    # if os.path.exists(logo_image_path):
-    #     st.image(logo_image_path, width=200)
-    # else:
-    #     st.error("Erro: Logo do IDP não encontrada.")
-
     st.title("Bem-vindo ao Dashboard de Psicologia 🧠")
     if os.path.exists(brain_image_path):
-        st.image(brain_image_path, caption="Explorando a mente humana")
+        st.markdown(
+            f"<div class='full-width-image'><img src='data:image/jpeg;base64,{st.image(brain_image_path, use_column_width=True)}' alt=''></div>",
+            unsafe_allow_html=True,
+        )
     else:
         st.error("Erro: Imagem da mente não encontrada.")
 
@@ -84,19 +90,19 @@ if current_page == "home":
     with col1:
         if st.button("📊 Monitoramento em Tempo Real"):
             navigate_to("tempo_real")
-            st.experimental_rerun()
+            st.rerun()
     with col2:
         if st.button("👤 Cadastro de Pacientes"):
             navigate_to("cadastro_paciente")
-            st.experimental_rerun()
+            st.rerun()
     with col3:
         if st.button("👨‍⚕️ Cadastro Psicólogo"):
             navigate_to("cadastro_psicologo")
-            st.experimental_rerun()
+            st.rerun()
     with col4:
         if st.button("📅 Consultas"):
             navigate_to("consultas")
-            st.experimental_rerun()
+            st.rerun()
 
 elif current_page == "tempo_real":
     visualizar_paciente()

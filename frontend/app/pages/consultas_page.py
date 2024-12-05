@@ -3,6 +3,8 @@ import pandas as pd
 import requests
 from datetime import date
 from controllers.consulta_controller import criar_consulta, listar_consultas
+from func.back_to_home import render_back_to_home_button
+
 
 # Função para listar pacientes e psicólogos
 def listar_pacientes():
@@ -22,6 +24,7 @@ def listar_psicologos():
         return []
 
 def consultas_page():
+    render_back_to_home_button()
     st.title("Cadastro de Consultas")
 
     # Formulário para cadastro de consulta

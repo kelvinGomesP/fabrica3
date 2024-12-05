@@ -1,7 +1,9 @@
 import streamlit as st
 from controllers.psicologo_controller import cadastrar_psicologo  # Importa a função para cadastrar o psicólogo
+from func.back_to_home import render_back_to_home_button
 
 def cadastro_psicologo():
+    render_back_to_home_button()
     st.title("Cadastro de Psicólogo")
 
     with st.form("cadastro_psicologo_form"):
