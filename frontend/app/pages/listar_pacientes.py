@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import pandas as pd  # Adicionado para manipulação de dados
 
 # URL da API
 API_BASE_URL = "http://localhost:8000"
@@ -120,6 +121,16 @@ def main():
     if pacientes:
         # Combinar dados
         pacientes_com_medo, pacientes_sem_medo = combinar_dados(pacientes, paciente_medos, medos)
+
+        # Adicionar botão de download no início
+        todos_dados = pacientes_com_medo + pacientes_sem_medo
+        csv_data = pd.DataFrame(todos_dados).to_csv(index=False)
+        st.download_button(
+            label="Baixar todos os dados (CSV)",
+            data=csv_data,
+            file_name="dados_pacientes.csv",
+            mime="text/csv"
+        )
 
         # Ordena os pacientes por nome
         pacientes_com_medo.sort(key=lambda x: x['Nome'])
